@@ -18,6 +18,15 @@ class Model
   def swap(box_1,box_2)
     order_1 = box_1.order
     order_2 = box_2.order
+
+    index_1 = find(box_1)
+    index_2 = find(box_2)
+
+    box_1.order = order_2
+    box_2.order = order_1
+
+    @boxes[index_1] = box_2
+    @boxes[index_2] = box_1
   end
 
 

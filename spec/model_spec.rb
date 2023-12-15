@@ -38,4 +38,12 @@ RSpec.describe Model do
       model = Model.new(@boxes)
       expect(model).to respond_to(:swap)
     end
+
+    it 'swap box_4 and box_2' do
+      model = Model.new(@boxes)
+      model.swap(@box_4,@box_2)
+      p model.boxes
+      expect(model.boxes[1].name).to eq 'Completed'
+      expect(model.boxes[3].name).to eq 'Planning'
+    end
 end
