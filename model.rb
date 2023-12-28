@@ -23,7 +23,12 @@ class Boxes
     end
   end
 
-  def move_up(initial_position,final_position)
-
+  def move_up(initial_position, final_position)
+    chosen_box_index = nil
+    @line.each_with_index do |element, index|
+      chosen_box_index = index if element.position == initial_position
+      element.position += 1 if element.position < initial_position && element.position >= final_position
+    end
+    @line[chosen_box_index].position = final_position
   end
 end

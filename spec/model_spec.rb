@@ -73,5 +73,9 @@ RSpec.describe Boxes do
     boxes.move_up(initial_position, final_position)
     expect(boxes.line[2].box.id).to eq(3)
     expect(boxes.line[2].position).to eq(4)
+    expect(boxes.line[1].box.id).to eq(2)
+    expect(boxes.line[1].position).to eq(3)
+    expect(boxes.line[3].box.id).to eq(4)
+    expect(boxes.line[3].position).to eq(2)
   end
 end
