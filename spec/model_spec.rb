@@ -1,71 +1,77 @@
-# spec/model_spec.rb
+# model_spec.rb
+# frozen_string_literal: true
 
-require './model'
+require_relative '../model'
 
-RSpec.describe Model do
-  before(:all) do
-    Box = Struct.new(:name, :order, :id)
+Box = Struct.new(:id, :name, :description)
 
-    @box_1 = Box.new(name: 'Propose', order: 1, id: 1)
-    @box_2 = Box.new(name: 'Planning', order: 2, id: 2)
-    @box_3 = Box.new(name: 'Doing', order: 3, id: 3)
-    @box_4 = Box.new(name: 'Completed', order: 4, id: 4)
-
-    @boxes = []
-
-    @boxes = [@box_1, @box_2, @box_3, @box_4]
+RSpec.describe Boxes do
+  it 'should initialise with an empty array called line' do
+    boxes = Boxes.new
+    expect(boxes).to have_attributes(line: an_instance_of(Array))
   end
 
-  it 'should have an attribute array containing all the boxes' do
-    model = Model.new(@boxes)
-    expect(model).to have_attributes(boxes: @boxes)
+  it 'should add a box into the line' do
+    boxes = Boxes.new
+    box = Box.new(1, 'Anthony', 'this is Anthony\'s box')
+    boxes.add(box)
+    expect(boxes.line.length).to eq(1)
   end
 
-  it 'should have a find method' do
-    model = Model.new(@boxes)
-    expect(model).to respond_to(:find)
+  it 'should assign a max position to the box when a box is added to Boxes' do
+    boxes = Boxes.new
+    box = Box.new(1, 'Anthony', 'this is Anthony\'s box')
+    boxes.add(box)
+    box_two = Box.new(2, 'Bernard', 'this is Middle\'s box')
+    boxes.add(box_two)
+    expect(boxes.line[1].position).to eq(2)
   end
 
-  it 'find should return the index of the box' do
-    model = Model.new(@boxes)
-    box = @box_2
-    expect(model.find(box)).to eq 1
+  it 'should delete a box(position)' do
+    boxes = Boxes.new
+    box = Box.new(1, 'Anthony', 'this is Anthony\'s box')
+    boxes.add(box)
+    box_two = Box.new(2, 'Bernard', 'this is Bernard\'s box')
+    boxes.add(box_two)
+    box_three = Box.new(3, 'Charles', 'this is Charles\'s box')
+    boxes.add(box_three)
+    box_four = Box.new(4, 'David', 'this is David\'s box')
+    boxes.add(box_four)
+    expect(boxes.line.length).to eq(4)
+    boxes.delete(2)
+    expect(boxes.line.length).to eq(3)
   end
 
-  it 'should have a swap method' do
-    model = Model.new(@boxes)
-    expect(model).to respond_to(:swap)
+  it 'should reposition the boxes that follows the deleted box' do
+    boxes = Boxes.new
+    box = Box.new(1, 'Anthony', 'this is Anthony\'s box')
+    boxes.add(box)
+    box_two = Box.new(2, 'Bernard', 'this is Bernard\'s box')
+    boxes.add(box_two)
+    box_three = Box.new(3, 'Charles', 'this is Charles\'s box')
+    boxes.add(box_three)
+    box_four = Box.new(4, 'David', 'this is David\'s box')
+    boxes.add(box_four)
+
+    boxes.delete(2)
+    expect(boxes.line[2].box.id).to eq(4)
+    expect(boxes.line[2].position).to eq(3)
   end
 
-  it 'swap box_4 and box_2' do
-    model = Model.new(@boxes)
-    model.swap(@box_4, @box_2)
-    expect(model.boxes[1].name).to eq 'Completed'
-    expect(model.boxes[3].name).to eq 'Planning'
-  end
-
-  it 'should have a method find_by_name' do
-    model = Model.new(@boxes)
-    expect(model).to respond_to(:find_by_name)
-  end
-
-  it 'find_by_name should return the found box' do
-    model = Model.new(@boxes)
-    box = model.find_by_name('Completed')
-    expect(box.order).to eq 2
-  end
-
-  it 'should have a method move_up' do
-    model = Model.new(@boxes)
-    expect(model).to respond_to(:move_up)
-  end
-
-  it 'move_up should move the box up the order' do
-    model = Model.new(@boxes)
-    puts model.boxes
-    box = model.find_by_name('Planning')
-    order = 2
-    model.move_up(box, order)
-    expect(model.boxes[1].name).to eq 'Planning'
+  it 'should edit the position attribute when moving up the line' do
+    boxes = Boxes.new
+    box = Box.new(1, 'Anthony', 'this is Anthony\'s box')
+    boxes.add(box)
+    box_two = Box.new(2, 'Bernard', 'this is Bernard\'s box')
+    boxes.add(box_two)
+    box_three = Box.new(3, 'Charles', 'this is Charles\'s box')
+    boxes.add(box_three)
+    box_four = Box.new(4, 'David', 'this is David\'s box')
+    boxes.add(box_four)
+    initial_position = 4
+    final_position = 2
+    boxes.move_up(initial_position, final_position)
+    expect(boxes.line[2].box.id).to eq(3)
+    expect(boxes.line[2].position).to eq(4)
   end
 end
